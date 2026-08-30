@@ -1,0 +1,1259 @@
+/* ============================================================================
+   ADMIN.CSS
+   Estilos EXCLUSIVOS del panel de Administración (Condominium Manager · Admin).
+   Requiere cargar common.css antes que este archivo.
+   ============================================================================ */
+
+/* ============================================================
+   SIDEBAR: grupos de navegación (solo Admin tiene sub-secciones)
+   ============================================================ */
+.sidebar-nav .nav-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.sidebar-nav .nav-group-label {
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    padding: var(--space-1) var(--space-2);
+    margin-top: var(--space-1);
+}
+
+/* ============================================================
+   BOTÓN "HABILITAR" — usado en los modales de confirmación de
+   Personal y Residentes. Misma estructura que btn-danger pero en
+   verde: transparente por defecto y se pinta de verde en hover.
+   ============================================================ */
+.btn-enable {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-2) var(--space-4);
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-secondary);
+    font-family: "Inter", sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background var(--transition-smooth), color var(--transition-smooth),
+        border-color var(--transition-smooth), transform var(--transition-smooth);
+}
+.btn-enable:hover {
+    background: var(--success);
+    color: #fff;
+    border-color: var(--success);
+    transform: translateY(-2px);
+}
+.btn-enable:focus-visible {
+    outline: 3px solid var(--success);
+    outline-offset: 2px;
+}
+
+/* ============================================================
+   TABLAS: fila de doble clic (historial de reservas)
+   ============================================================ */
+.table-modern tr.dblclickable {
+    cursor: pointer;
+}
+
+/* ============================================================
+   ICONOS DE ACCIÓN EN TABLAS (Admin usa .action-icons;
+   Inquilino/Guardia usan .action-cell)
+   ============================================================ */
+.action-icons {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.action-icons a {
+    color: var(--text-muted);
+    transition: color var(--transition-fast), background var(--transition-fast);
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 4px 6px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.action-icons a:hover {
+    color: var(--accent);
+    background: var(--bg-input);
+}
+.action-icons a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* ============================================================
+   BADGES EXTRA (dominios, prioridad, deshabilitado)
+   ============================================================ */
+.badge-domain {
+    background: var(--bg-input);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+.badge-priority-high {
+    background: var(--error);
+    color: #fff;
+}
+.badge-priority-medium {
+    background: var(--warning);
+    color: #000;
+}
+.badge-priority-low {
+    background: var(--bg-input);
+    color: var(--text-secondary);
+}
+.badge-disabled {
+    background: var(--text-muted);
+    color: #fff;
+}
+
+/* ============================================================
+   DASHBOARD: KPIs (5 tarjetas)
+   ============================================================ */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+}
+.kpi-card {
+    background: rgba(23, 24, 27, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    border: 1px solid var(--border-color);
+    transition: transform var(--transition-smooth), border-color var(--transition-smooth), box-shadow var(--transition-smooth), background var(--transition-smooth);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    min-width: 0;
+}
+[data-theme="light"] .kpi-card {
+    background: rgba(255, 255, 255, 0.8);
+}
+.kpi-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+    box-shadow: var(--shadow-card);
+}
+.kpi-card:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+}
+.kpi-card .kpi-label {
+    color: var(--text-muted);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    margin-bottom: var(--space-1);
+}
+.kpi-card .kpi-value {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+.kpi-card .kpi-icon {
+    float: right;
+    font-size: 1.6rem;
+    opacity: 0.7;
+}
+/* Colores variados para los KPIs */
+.kpi-card:nth-child(1) .kpi-icon { color: var(--accent); }
+.kpi-card:nth-child(2) .kpi-icon { color: var(--success); }
+.kpi-card:nth-child(3) .kpi-icon { color: var(--purple); }
+.kpi-card:nth-child(4) .kpi-icon { color: var(--orange); }
+.kpi-card:nth-child(5) .kpi-icon { color: var(--warning); }
+
+/* ============================================================
+   DASHBOARD: grid principal (2 columnas)
+   ============================================================ */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+}
+.dashboard-grid .card {
+    background: rgba(23, 24, 27, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    border: 1px solid var(--border-color);
+}
+[data-theme="light"] .dashboard-grid .card {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+/* Próximas reservas */
+.next-reservation-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--border-color);
+}
+.next-reservation-item:last-child {
+    border-bottom: none;
+}
+.next-reservation-item .reservation-time {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    min-width: 50px;
+}
+.next-reservation-item .reservation-info {
+    flex: 1;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+.next-reservation-item .reservation-info strong {
+    color: var(--text-primary);
+}
+
+/* Alertas administrativas */
+.alert-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--border-color);
+}
+.alert-item:last-child {
+    border-bottom: none;
+}
+.alert-text {
+    flex: 1;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    min-width: 0;
+}
+.alert-badge {
+    flex-shrink: 0;
+}
+
+/* Actividad reciente */
+.activity-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--border-color);
+}
+.activity-item:last-child {
+    border-bottom: none;
+}
+.activity-item .activity-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.activity-item .activity-text {
+    flex: 1;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    min-width: 0;
+}
+.activity-item .activity-time {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+/* ============================================================
+   DEPARTAMENTOS (cards)
+   ============================================================ */
+.dept-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--space-4);
+}
+.dept-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    transition: transform var(--transition-smooth), border-color var(--transition-smooth);
+}
+.dept-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+}
+.dept-card .dept-number {
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: var(--text-primary);
+}
+.dept-card .dept-tower {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+.dept-card .dept-status {
+    margin-top: var(--space-1);
+}
+.dept-card .dept-resident {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin: var(--space-2) 0;
+}
+.dept-card .dept-actions {
+    display: flex;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+}
+.dept-card .dept-actions a {
+    padding: var(--space-1) var(--space-2);
+    background: var(--bg-input);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.75rem;
+    transition: background var(--transition-fast), color var(--transition-fast);
+    cursor: pointer;
+}
+.dept-card .dept-actions a:hover {
+    background: var(--accent);
+    color: #fff;
+}
+
+/* ============================================================
+   ÁREAS COMUNES (tarjeta con estado deshabilitado)
+   ============================================================ */
+.area-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: var(--space-4);
+}
+.area-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: transform var(--transition-smooth), border-color var(--transition-smooth), opacity var(--transition-smooth), background var(--transition-smooth);
+}
+.area-card.disabled {
+    opacity: 0.6;
+    border-color: var(--text-muted);
+    filter: grayscale(0.3);
+}
+.area-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+}
+.area-card .area-img {
+    height: 150px;
+    background: var(--bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    overflow: hidden;
+}
+.area-card .area-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.area-card .area-body {
+    padding: var(--space-3);
+}
+.area-card .area-body h4 {
+    font-weight: 600;
+    margin-bottom: var(--space-1);
+    color: var(--text-primary);
+}
+.area-card .area-body p {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-1);
+}
+.area-card .area-body .area-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+    margin-top: var(--space-2);
+}
+.area-card .area-body .area-actions a {
+    padding: var(--space-1) var(--space-2);
+    background: var(--bg-input);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.7rem;
+    transition: background var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
+    border: 1px solid transparent;
+    cursor: pointer;
+}
+.area-card .area-body .area-actions a:not(.btn-danger):hover {
+    background: var(--accent);
+    color: #fff;
+    transform: translateY(-2px);
+}
+.area-card .area-body .area-actions a.btn-danger:hover {
+    background: var(--error);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+/* ============================================================
+   PAGOS
+   ============================================================ */
+.payment-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+}
+.payment-summary .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--space-3);
+    text-align: center;
+}
+.payment-summary .stat-card .stat-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+.payment-summary .stat-card .stat-value {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-top: var(--space-1);
+}
+
+/* ============================================================
+   REPORTES
+   ============================================================ */
+.reports-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--space-4);
+}
+.report-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    transition: transform var(--transition-smooth), border-color var(--transition-smooth);
+}
+.report-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+}
+.report-card h4 {
+    font-weight: 600;
+    margin-bottom: var(--space-1);
+}
+.report-card p {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-3);
+    flex: 1;
+}
+.report-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-1);
+    min-height: 1.6rem;
+}
+.report-card-header h4 {
+    margin: 0;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.report-card-header .badge {
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    min-width: 36px;
+    text-align: center;
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+}
+.report-btn-full {
+    width: 100%;
+    justify-content: center;
+    margin-top: var(--space-2);
+    flex-shrink: 0;
+    min-height: 2.2rem;
+}
+
+/* ============================================================
+   RESERVAS: pestaña "Hoy" (agenda por franjas horarias)
+   ============================================================ */
+.reservations-today-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-3);
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+.reservations-today-header .today-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+.reservations-today-header .today-header-left {
+    display: flex;
+    flex-direction: column;
+}
+.reservations-today-header .today-date {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-top: 2px;
+}
+.reservations-today-header .today-count {
+    background: var(--bg-card);
+    padding: var(--space-1) var(--space-3);
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.time-slot-group {
+    margin-bottom: var(--space-5);
+}
+.time-slot-group .slot-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-3);
+    padding-bottom: var(--space-1);
+    border-bottom: 1px solid var(--border-color);
+}
+.time-slot-group .slot-header .slot-icon {
+    font-size: 1.2rem;
+    width: 30px;
+    text-align: center;
+}
+
+.hour-block {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-3);
+    border-left: 2px solid var(--border-color);
+}
+.hour-block .hour-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: var(--space-2);
+}
+.hour-block .hour-header i {
+    color: var(--accent);
+    font-size: 0.8rem;
+}
+.hour-block .hour-header .hour-count {
+    font-weight: 400;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    margin-left: auto;
+}
+
+.reservation-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--border-color);
+    margin-bottom: var(--space-3);
+    transition: transform var(--transition-smooth), box-shadow var(--transition-smooth),
+                border-color var(--transition-smooth), background var(--transition-smooth);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+}
+[data-theme="light"] .reservation-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    border-color: var(--border-color);
+}
+[data-theme="light"] .reservation-card:hover {
+    background: #FFFFFF;
+    border-color: var(--accent);
+}
+.reservation-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card);
+    border-color: var(--accent);
+}
+.reservation-card .card-icon {
+    font-size: 1.4rem;
+    color: var(--accent);
+    width: 36px;
+    text-align: center;
+    flex-shrink: 0;
+}
+.reservation-card .card-info {
+    flex: 1;
+    min-width: 150px;
+}
+.reservation-card .card-info .area-name {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+.reservation-card .card-info .resident-name {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+.reservation-card .card-info .resident-name i {
+    margin-right: 4px;
+    font-size: 0.7rem;
+}
+.reservation-card .card-details {
+    display: flex;
+    gap: var(--space-3);
+    align-items: center;
+    flex-wrap: wrap;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+.reservation-card .card-details .detail-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.reservation-card .card-details .detail-item i {
+    font-size: 0.7rem;
+}
+.reservation-card .card-status {
+    flex-shrink: 0;
+}
+.reservation-card .card-status .badge {
+    font-size: 0.6rem;
+    padding: 2px 10px;
+}
+
+/* ============================================================
+   LIGHT MODE: Filters bar background
+   ============================================================ */
+[data-theme="light"] .history-filters,
+[data-theme="light"] .visitas-filters {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="light"] .filters-bar input,
+[data-theme="light"] .filters-bar select,
+[data-theme="light"] .history-filters .filter-group input,
+[data-theme="light"] .history-filters .filter-group select,
+[data-theme="light"] .visitas-filters .filter-group input,
+[data-theme="light"] .visitas-filters .filter-group select {
+    background: #FFFFFF;
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .history-filters .btn-secondary,
+[data-theme="light"] .visitas-filters .btn-secondary {
+    color: var(--text-secondary);
+    border-color: var(--border-color);
+}
+[data-theme="light"] .history-filters .btn-secondary:hover,
+[data-theme="light"] .visitas-filters .btn-secondary:hover {
+    color: var(--text-primary);
+    border-color: var(--accent);
+}
+
+[data-theme="light"] .time-slot-group .slot-header {
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .hour-block {
+    border-left-color: var(--border-color);
+}
+
+[data-theme="light"] .hour-block .hour-header {
+    color: var(--text-secondary);
+}
+
+[data-theme="light"] .today-count {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: var(--border-color);
+}
+
+[data-theme="light"] .reservations-today-header .today-date {
+    color: var(--text-muted);
+}
+
+/* ============================================================
+   RESPONSIVE (exclusivo Admin)
+   ============================================================ */
+@media (max-width: 992px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    .settings-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .kpi-grid {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: var(--space-3);
+    }
+
+    .reservation-card {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--space-2);
+    }
+    .reservation-card .card-details {
+        justify-content: flex-start;
+    }
+    .reservation-card .card-status {
+        align-self: flex-start;
+    }
+
+    .dept-grid,
+    .area-grid,
+    .reports-grid,
+    .payment-summary {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .kpi-grid {
+        grid-template-columns: 1fr;
+    }
+    .kpi-card .kpi-value {
+        font-size: 1.5rem;
+    }
+    .reservations-today-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--space-1);
+    }
+    .reservations-today-header .today-count {
+        align-self: flex-start;
+    }
+    .navbar-left h2 {
+        max-width: 30vw;
+    }
+    .profile-avatar-section .profile-avatar {
+        width: 120px;
+        height: 120px;
+    }
+}
+
+/* ============================================================
+   BITÁCORA (auditoría)
+   Todos los estilos del módulo viven aquí (admin.css).
+   ============================================================ */
+
+/* Filtros: usa la base .history-filters de common.css + ajustes propios */
+.bitacora-filters {
+    margin-bottom: var(--space-4);
+}
+.bitacora-filters .bitacora-filtro-busqueda {
+    flex: 2 1 240px;
+}
+
+/* Indicador de carga */
+.bitacora-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-6);
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+.bitacora-loading i {
+    color: var(--accent);
+    font-size: 1.2rem;
+}
+
+/* Manejo de errores */
+.bitacora-error {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    background: rgba(239, 95, 103, 0.12);
+    border: 1px solid rgba(239, 95, 103, 0.35);
+    border-radius: var(--radius-md);
+    color: var(--error);
+    font-size: 0.85rem;
+    margin-bottom: var(--space-4);
+}
+
+/* Sin registros */
+.bitacora-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-7) var(--space-4);
+    text-align: center;
+    color: var(--text-muted);
+    border: 1px dashed var(--border-color);
+    border-radius: var(--radius-lg);
+}
+.bitacora-empty i {
+    font-size: 2.6rem;
+    opacity: 0.5;
+}
+
+/* Tabla con scroll horizontal en escritorio */
+.bitacora-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    background: var(--bg-card);
+    transition: background var(--transition-smooth), border-color var(--transition-smooth);
+}
+.bitacora-table-wrap .table-modern {
+    min-width: 860px;
+}
+.bitacora-desc {
+    max-width: 260px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Badges de operación:
+   INSERT verde, UPDATE amarillo, DELETE rojo, LOGIN azul,
+   LOGOUT gris, EXPIRADA oscuro. */
+.bitacora-op-insert {
+    background: var(--success);
+    color: #fff;
+}
+.bitacora-op-update {
+    background: var(--warning);
+    color: #000;
+}
+.bitacora-op-delete {
+    background: var(--error);
+    color: #fff;
+}
+.bitacora-op-login {
+    background: var(--accent);
+    color: #fff;
+}
+.bitacora-op-logout {
+    background: #8B8D97;
+    color: #fff;
+}
+.bitacora-op-expirada {
+    background: #3A3D44;
+    color: #fff;
+}
+[data-theme="light"] .bitacora-op-expirada {
+    background: #2B2D31;
+    color: #fff;
+}
+.bitacora-op-default {
+    background: var(--bg-input);
+    color: var(--text-secondary);
+}
+
+/* Paginación */
+.bitacora-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    margin-top: var(--space-4);
+}
+.bitacora-pagination-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+.bitacora-pagination-info strong {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+.bitacora-pagination-info label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.bitacora-pagination-info select {
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    font-family: inherit;
+}
+.bitacora-pagination-info select:focus {
+    border-color: var(--accent);
+    outline: none;
+}
+.bitacora-pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+.bitacora-pagination-controls .btn-secondary {
+    padding: 8px 14px;
+    font-size: 0.7rem;
+    height: auto;
+}
+.bitacora-pagination-controls .btn-secondary:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+}
+.bitacora-page-btn {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 8px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+}
+.bitacora-page-btn:hover {
+    border-color: var(--accent);
+    color: var(--text-primary);
+}
+.bitacora-page-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    font-weight: 600;
+}
+.bitacora-page-ellipsis {
+    color: var(--text-muted);
+    padding: 0 4px;
+}
+
+/* Modal de detalle (JSON de cambio) */
+.bitacora-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-4);
+    animation: fadeIn 0.2s ease;
+}
+.bitacora-modal {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    width: 920px;
+    max-width: 100%;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    animation: fadeIn 0.25s ease;
+    transition: background var(--transition-smooth), border-color var(--transition-smooth);
+}
+[data-theme="light"] .bitacora-modal {
+    background: #fff;
+}
+.bitacora-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4) var(--space-5);
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+.bitacora-modal-header h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+.bitacora-modal-header h3 i {
+    color: var(--accent);
+}
+.bitacora-modal-close {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.3rem;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: var(--radius-sm);
+    transition: color var(--transition-fast), background var(--transition-fast);
+}
+.bitacora-modal-close:hover {
+    color: var(--text-primary);
+    background: var(--bg-card-hover);
+}
+.bitacora-modal-body {
+    padding: var(--space-4) var(--space-5);
+    overflow-y: auto;
+}
+
+/* Datos básicos del evento */
+.bitacora-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-2) var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-4);
+}
+.bitacora-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+.bitacora-detail-item span {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+}
+.bitacora-detail-item strong {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    word-break: break-word;
+}
+.bitacora-detail-descripcion {
+    grid-column: 1 / -1;
+}
+
+/* Visor JSON (dato_anterior / dato_nuevo) */
+.bitacora-json-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+}
+.bitacora-json-panel {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+.bitacora-json-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-2) var(--space-3);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+}
+.bitacora-json-title i {
+    color: var(--accent);
+}
+.bitacora-json-content {
+    padding: var(--space-2) var(--space-3);
+    overflow: auto;
+    max-height: 320px;
+    min-height: 90px;
+    background: var(--bg-input);
+    transition: background var(--transition-smooth);
+}
+.bitacora-json-vacio {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 90px;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-style: italic;
+}
+.bitacora-json-texto {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* Responsive del módulo Bitácora */
+@media (max-width: 768px) {
+    .bitacora-table-wrap .table-modern {
+        min-width: 0;
+    }
+    .bitacora-desc {
+        max-width: none;
+        white-space: normal;
+    }
+    .bitacora-json-grid {
+        grid-template-columns: 1fr;
+    }
+    .bitacora-detail-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .bitacora-pagination {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .bitacora-pagination-info,
+    .bitacora-pagination-controls {
+        justify-content: center;
+    }
+    .bitacora-modal-overlay {
+        padding: var(--space-2);
+    }
+    .bitacora-modal {
+        max-height: 92vh;
+    }
+}
+@media (max-width: 480px) {
+    .bitacora-detail-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================================
+   VENTANAS DE MANTENIMIENTO (Drawer Nueva/Editar Área — áreas comunes)
+   Cada ventana es una fila [inicio] a [fin] + descripción + botón quitar.
+   La lista va dentro de una tarjeta para separarla del texto de ayuda y
+   agrupar visualmente las filas dinámicas.
+   ============================================================ */
+.mantenimiento-lista {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin: var(--space-3) 0 var(--space-4);
+    padding: var(--space-3);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+}
+
+.mantenimiento-fila {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.mantenimiento-fila select,
+.mantenimiento-fila input[type="text"] {
+    padding: var(--space-2);
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    font-family: inherit;
+    transition: border var(--transition-fast), box-shadow var(--transition-fast),
+        background var(--transition-smooth), color var(--transition-smooth);
+}
+
+.mantenimiento-fila select {
+    width: 110px;
+    flex-shrink: 0;
+}
+
+.mantenimiento-fila input[type="text"] {
+    flex: 1;
+    min-width: 0;
+}
+
+.mantenimiento-fila input:focus {
+    border-color: var(--accent);
+    box-shadow: var(--shadow-input-focus);
+    outline: none;
+}
+
+.mantenimiento-fila .btn-quitar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    padding: 0;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background var(--transition-fast), color var(--transition-fast),
+        border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.mantenimiento-fila .btn-quitar:hover {
+    background: rgba(239, 95, 103, 0.1);
+    border-color: var(--error);
+    color: var(--error);
+}
+
+.mantenimiento-fila .btn-quitar:focus-visible {
+    outline: 3px solid rgba(239, 95, 103, 0.3);
+    outline-offset: 2px;
+}
+
+.mantenimiento-agregar {
+    margin-top: var(--space-1);
+}
+
+@media (max-width: 480px) {
+    .mantenimiento-fila {
+        flex-wrap: wrap;
+    }
+    .mantenimiento-fila input[type="text"] {
+        flex-basis: 100%;
+    }
+}

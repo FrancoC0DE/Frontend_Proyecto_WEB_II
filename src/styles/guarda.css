@@ -1,0 +1,180 @@
+/* ============================================================================
+   GUARDIA.CSS
+   Estilos EXCLUSIVOS del panel de Guardia (Condominium · Guardia).
+   Requiere cargar common.css antes que este archivo.
+   ============================================================================ */
+
+/* ============================================================
+   BOTÓN "ÉXITO" (autorizar)
+   ============================================================ */
+.btn-success {
+    background: var(--success);
+    color: #000;
+    box-shadow: 0 4px 12px rgba(60, 207, 145, 0.3);
+}
+.btn-success:hover {
+    background: #2db87d;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(60, 207, 145, 0.4);
+}
+
+/* ============================================================
+   DASHBOARD: KPIs (3 tarjetas: pendientes / autorizadas / rechazadas)
+   ============================================================ */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+}
+.kpi-card {
+    background: rgba(23, 24, 27, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    border: 1px solid var(--border-color);
+    transition: transform var(--transition-smooth), border-color var(--transition-smooth), box-shadow var(--transition-smooth), background var(--transition-smooth);
+    cursor: default;
+    position: relative;
+    overflow: hidden;
+}
+[data-theme="light"] .kpi-card {
+    background: rgba(255, 255, 255, 0.8);
+}
+.kpi-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+    box-shadow: var(--shadow-card);
+}
+.kpi-card .kpi-label {
+    color: var(--text-muted);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    margin-bottom: var(--space-1);
+}
+.kpi-card .kpi-value {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+.kpi-card .kpi-icon {
+    float: right;
+    font-size: 1.6rem;
+    opacity: 0.7;
+}
+.kpi-card:nth-child(1) .kpi-icon {
+    color: var(--warning);
+}
+.kpi-card:nth-child(2) .kpi-icon {
+    color: var(--success);
+}
+.kpi-card:nth-child(3) .kpi-icon {
+    color: var(--error);
+}
+
+/* ============================================================
+   MODAL DE DETALLE: botones de acción rectangulares
+   Sin la forma de "radio button" (pill) que trae .btn-sm base.
+   Se aplica solo a los botones Autorizar/Rechazar del modal de
+   detalle; las acciones de la tabla conservan su estilo propio.
+   ============================================================ */
+.modal .modal-actions .btn-sm {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    border-radius: 0;
+    padding: var(--space-2) var(--space-3);
+    font-size: 0.75rem;
+}
+
+/* ============================================================
+   TABLA DE VISITAS: nombre destacado
+   ============================================================ */
+.table-modern .nombre-visitante {
+    font-weight: 600;
+    color: var(--text-primary);
+    transition: color var(--transition-smooth);
+}
+
+/* ============================================================
+   BOTONES DE ACCIÓN DENTRO DE LA TABLA (autorizar/rechazar/ver)
+   ============================================================ */
+.table-modern .action-cell .btn-sm {
+    padding: var(--space-1) var(--space-2);
+    font-size: 0.7rem;
+    border-radius: var(--radius-sm);
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background var(--transition-fast), transform var(--transition-fast);
+}
+.table-modern .action-cell .btn-sm:hover {
+    transform: translateY(-2px);
+}
+.table-modern .action-cell .btn-sm.btn-success {
+    background: var(--success);
+    color: #000;
+}
+.table-modern .action-cell .btn-sm.btn-success:hover {
+    background: #2db87d;
+}
+.table-modern .action-cell .btn-sm.btn-danger-sm {
+    background: var(--error);
+    color: #fff;
+}
+.table-modern .action-cell .btn-sm.btn-danger-sm:hover {
+    background: #d94a52;
+}
+.table-modern .action-cell .btn-sm.btn-info {
+    background: var(--accent);
+    color: #fff;
+}
+.table-modern .action-cell .btn-sm.btn-info:hover {
+    background: var(--accent-hover);
+}
+
+/* ============================================================
+   PERFIL: variante de subida de archivo sin .file-label
+   (Admin e Inquilino usan el botón estilizado .file-label,
+   Guardia estiliza el input[type=file] directamente)
+   ============================================================ */
+.profile-avatar-section .profile-avatar-controls .file-input-wrapper input[type="file"] {
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: var(--space-1) var(--space-2);
+    color: var(--text-primary);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background var(--transition-smooth), border-color var(--transition-smooth), color var(--transition-smooth);
+}
+
+/* ============================================================
+   RESPONSIVE (exclusivo Guardia)
+   ============================================================ */
+@media (max-width: 768px) {
+    .kpi-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-3);
+    }
+    .kpi-card:nth-child(3) {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 480px) {
+    .kpi-grid {
+        grid-template-columns: 1fr;
+    }
+    .kpi-card:nth-child(3) {
+        grid-column: span 1;
+    }
+    /* Botones del modal de detalle a ancho completo (igual que "Cerrar") */
+    .modal .modal-actions .btn-sm {
+        width: 100%;
+        justify-content: center;
+    }
+}
