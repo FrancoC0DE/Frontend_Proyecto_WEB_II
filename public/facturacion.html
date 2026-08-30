@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Boricuas — Facturación Electrónica</title>
+<style>
+  :root {
+    --bg-primary: #09090B;
+    --bg-card: #17181B;
+    --bg-card-hover: #1D1F23;
+    --bg-input: #1D1F23;
+    --border-color: #2B2D31;
+    --text-primary: #FFFFFF;
+    --text-secondary: #C6C8CE;
+    --text-muted: #8B8D97;
+    --accent: #0A84FF;
+    --accent-hover: #3B9EFF;
+    --success: #3CCF91;
+    --error: #EF5F67;
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+  }
+  .container { max-width: 880px; margin: 0 auto; padding: 48px 24px 80px; }
+  header { text-align: center; margin-bottom: 48px; }
+  header .badge {
+    display: inline-block; background: rgba(10,132,255,0.15); color: var(--accent);
+    padding: 4px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-bottom: 16px;
+  }
+  h1 { font-size: 2.1rem; margin: 0 0 12px; }
+  header p { color: var(--text-secondary); max-width: 560px; margin: 0 auto; }
+  .card {
+    background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg);
+    padding: 32px; margin-bottom: 32px;
+  }
+  .card h2 { margin-top: 0; font-size: 1.3rem; }
+  .card h3 { font-size: 1.05rem; margin: 28px 0 8px; color: var(--text-primary); }
+  .card p { color: var(--text-secondary); }
+  label { display: block; font-size: 0.85rem; font-weight: 600; margin: 16px 0 6px; color: var(--text-secondary); }
+  input, select {
+    width: 100%; padding: 12px 14px; background: var(--bg-input); border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm); color: var(--text-primary); font-size: 0.95rem;
+  }
+  input:focus, select:focus { outline: none; border-color: var(--accent); }
+  button {
+    margin-top: 24px; width: 100%; padding: 13px; background: var(--accent); color: #fff; border: none;
+    border-radius: var(--radius-sm); font-size: 1rem; font-weight: 600; cursor: pointer;
+    transition: background 0.2s;
+  }
+  button:hover { background: var(--accent-hover); }
+  button:disabled { opacity: 0.6; cursor: not-allowed; }
+  .resultado {
+    margin-top: 20px; padding: 18px; border-radius: var(--radius-sm); display: none;
+  }
+  .resultado.ok { display: block; background: rgba(60,207,145,0.1); border: 1px solid var(--success); }
+  .resultado.error { display: block; background: rgba(239,95,103,0.1); border: 1px solid var(--error); }
+  .resultado code {
+    display: block; background: var(--bg-input); padding: 10px 12px; border-radius: 6px; margin-top: 8px;
+    word-break: break-all; font-size: 0.85rem; color: var(--accent);
+  }
+  .resultado .aviso { color: var(--error); font-size: 0.8rem; margin-top: 8px; font-weight: 600; }
+  pre {
+    background: var(--bg-input); border: 1px solid var(--border-color); border-radius: var(--radius-sm);
+    padding: 16px; overflow-x: auto; font-size: 0.82rem; color: var(--text-secondary);
+  }
+  code { font-family: 'SF Mono', Menlo, Consolas, monospace; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border-color); font-size: 0.88rem; }
+  th { color: var(--text-muted); font-weight: 600; }
+  .steps { counter-reset: step; list-style: none; padding: 0; }
+  .steps li {
+    counter-increment: step; margin-bottom: 14px; padding-left: 40px; position: relative; color: var(--text-secondary);
+  }
+  .steps li::before {
+    content: counter(step); position: absolute; left: 0; top: 0; width: 26px; height: 26px;
+    background: rgba(10,132,255,0.15); color: var(--accent); border-radius: 50%; display: flex;
+    align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem;
+  }
+  .steps li strong { color: var(--text-primary); }
+  footer { text-align: center; color: var(--text-muted); font-size: 0.85rem; margin-top: 40px; }
+  footer a { color: var(--accent); text-decoration: none; }
+  .warning {
+    background: rgba(245,184,61,0.1); border: 1px solid #F5B83D; border-radius: var(--radius-lg);
+    padding: 24px 28px; margin-bottom: 32px;
+  }
+  .warning-title {
+    display: flex; align-items: center; gap: 10px; color: #F5B83D; font-weight: 700;
+    font-size: 1.05rem; margin-bottom: 10px;
+  }
+  .warning-title svg { flex-shrink: 0; }
+  .warning p { color: var(--text-secondary); margin: 0 0 10px; }
+  .warning ul { margin: 0 0 10px; padding-left: 20px; color: var(--text-secondary); }
+  .warning li { margin-bottom: 6px; }
+  .warning li strong { color: var(--text-primary); }
+  .warning .final { color: var(--text-primary); font-weight: 600; margin: 12px 0 0; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <span class="badge">Empresa que vende el servicio de Facturación Electrónica</span>
+    <h1>Boricuas — Facturación Electrónica</h1>
+    <p>Registrá tu sitio, mandanos tus ventas ya firmadas, y nosotros nos encargamos de validarlas y enviarlas a Mini Tributación (DGTD).</p>
+  </header>
+
+  <div class="warning">
+    <div class="warning-title">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Antes de registrarte, adaptá los OTROS servicios primero
+    </div>
+    <p>Registrarte acá NO alcanza para poder facturar de verdad. Este servicio solo empaqueta, valida y reenvía a Mini Tributación lo que vos ya tenés armado — necesitás tener resuelto vos mismo, con TU PROPIA identidad, antes de mandarnos tu primera venta:</p>
+    <ul>
+      <li><strong>Firma Digital (HSM Sign CR)</strong> — registrá tu propio negocio ahí y conseguí tu certificado. Nosotros nunca firmamos por vos: tu PIN nunca sale de tu navegador.</li>
+      <li><strong>Cobro al cliente</strong> — tu propia pasarela de pago (ej. BankyFinanzas) para cobrarle a tu cliente antes de facturar. Nosotros no procesamos ningún cobro.</li>
+      <li><strong>Comprobante en PDF</strong> (opcional) — si querés un PDF bonito para tu cliente, necesitás tu propia cuenta de Billing Kilometer. La nuestra solo emite a nuestro propio nombre.</li>
+    </ul>
+    <p class="final">Si todavía no tenés esas tres cosas resueltas, andá a hacerlo primero — después volvé acá y registrá tu sitio.</p>
+  </div>
+
+  <div class="card">
+    <h2>1. Registrá tu sitio</h2>
+    <p>Recibís una API key al instante — se muestra <strong>una sola vez</strong>, guardala apenas la veas.</p>
+
+    <form id="form-registro">
+      <label for="nombre">Nombre del sitio</label>
+      <input type="text" id="nombre" required placeholder="Tienda de Ejemplo" />
+
+      <label for="correo">Correo de contacto</label>
+      <input type="email" id="correo" required placeholder="contacto@tuequipo.com" />
+
+      <label for="identificacion">Identificación tributaria</label>
+      <input type="text" id="identificacion" required placeholder="1-2345-6789" />
+
+      <label for="tipo">Tipo de identificación</label>
+      <select id="tipo" required>
+        <option value="CEDULA_FISICA">Cédula física</option>
+        <option value="CEDULA_JURIDICA">Cédula jurídica</option>
+        <option value="DIMEX">DIMEX</option>
+        <option value="NITE">NITE</option>
+      </select>
+
+      <button type="submit" id="btn-registro">Registrar sitio</button>
+    </form>
+
+    <div class="resultado" id="resultado"></div>
+  </div>
+
+  <div class="card">
+    <h2>2. Cómo integrar (resumen)</h2>
+    <p>Firmar es siempre interactivo — tu PIN de HSM Sign CR nunca sale de tu propio navegador ni pasa por nuestro backend.</p>
+    <ol class="steps">
+      <li><strong>POST /sitios</strong> (arriba) — una sola vez, obtenés tu API key.</li>
+      <li><strong>POST /ventas</strong> — le mandás los datos de una venta; te devolvemos el XML sin firmar, armado con tu identidad como emisor.</li>
+      <li>Firmás ese XML con tu propia identificación + PIN en HSM Sign CR (en tu propio sitio).</li>
+      <li><strong>POST /ventas/:id/firmar</strong> — nos mandás el resultado de esa firma; validamos y enviamos a Mini Tributación a nombre tuyo.</li>
+      <li><strong>GET /ventas/:id</strong> — consultás el estado (aceptada/rechazada + número de acuse) cuando quieras.</li>
+    </ol>
+
+    <h3>URL base</h3>
+    <pre>https://backend-proyecto-web-ii.onrender.com/api/facturacion</pre>
+
+    <h3>Ejemplo: registrar una venta</h3>
+    <pre>curl -X POST https://backend-proyecto-web-ii.onrender.com/api/facturacion/ventas \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: TU_API_KEY" \
+  -d '{
+    "referenciaExterna": "ORD-001",
+    "clienteNombre": "Ana Pérez",
+    "clienteIdentificacion": "1-2345-6789",
+    "clienteCorreo": "ana@correo.com",
+    "detalle": "Compra en línea",
+    "monto": 15000
+  }'</pre>
+
+    <h3>Errores comunes</h3>
+    <table>
+      <tr><th>Código</th><th>Causa</th></tr>
+      <tr><td>401</td><td>Falta <code>x-api-key</code>, o es inválida / el sitio está inactivo</td></tr>
+      <tr><td>400</td><td>Datos inválidos, o la firma/XML no pasó validación</td></tr>
+      <tr><td>404</td><td>La factura no existe o no pertenece a tu API key</td></tr>
+      <tr><td>409</td><td>Ya intentaste firmar una factura que no está pendiente</td></tr>
+    </table>
+
+    <h3>Qué NO hacemos por vos</h3>
+    <p>No generamos el comprobante en PDF a tu nombre (necesitás tu propia cuenta de Billing Kilometer para eso), no procesamos el cobro (necesitás tu propia pasarela, ej. BankyFinanzas), y no firmamos por vos — el PIN es tuyo.</p>
+  </div>
+
+  <footer>
+    Manual completo, ejemplos de cada endpoint y catálogo de errores en el
+    <a href="https://github.com/FrancoC0DE/Backend_Proyecto_WEB_II#facturación-electrónica--api-para-otros-sitios" target="_blank" rel="noopener">README del backend</a>.
+  </footer>
+</div>
+
+<script>
+  const API_BASE = 'https://backend-proyecto-web-ii.onrender.com/api/facturacion';
+
+  document.getElementById('form-registro').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('btn-registro');
+    const resultado = document.getElementById('resultado');
+    resultado.className = 'resultado';
+    resultado.innerHTML = '';
+    btn.disabled = true;
+    btn.textContent = 'Registrando...';
+
+    const payload = {
+      nombre: document.getElementById('nombre').value.trim(),
+      correo: document.getElementById('correo').value.trim(),
+      identificacionTributaria: document.getElementById('identificacion').value.trim(),
+      tipoIdentificacion: document.getElementById('tipo').value,
+    };
+
+    try {
+      const resp = await fetch(`${API_BASE}/sitios`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await resp.json();
+
+      if (!resp.ok) {
+        resultado.className = 'resultado error';
+        const detalle = Array.isArray(data.errores) ? data.errores.join(', ') : (data.message || 'No se pudo registrar el sitio.');
+        resultado.innerHTML = `<strong>Error:</strong> ${detalle}`;
+      } else {
+        resultado.className = 'resultado ok';
+        resultado.innerHTML = `
+          <strong>¡Listo! Sitio "${data.nombre}" registrado.</strong>
+          <code>${data.apiKey}</code>
+          <div class="aviso">⚠️ Guardá esta clave ahora — no se puede volver a mostrar.</div>
+        `;
+      }
+    } catch {
+      resultado.className = 'resultado error';
+      resultado.innerHTML = '<strong>Error:</strong> No se pudo contactar al servidor. Intentá de nuevo.';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Registrar sitio';
+    }
+  });
+</script>
+</body>
+</html>
