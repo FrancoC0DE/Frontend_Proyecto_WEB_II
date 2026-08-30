@@ -67,6 +67,11 @@ export function firmarConHSMSignCR(datos: DatosFirma): Promise<ResultadoFirma> {
             return;
         }
 
+        // TypeScript no propaga el descarte de `null` de arriba hacia dentro
+        // de manejarMensaje (function declaration anidada) — se recaptura en
+        // una nueva const ya tipada como Window (no Window | null).
+        const ventanaAbierta: Window = ventana;
+
         let finalizado = false;
 
         function limpiar() {
@@ -82,7 +87,7 @@ export function firmarConHSMSignCR(datos: DatosFirma): Promise<ResultadoFirma> {
             // El popup avisa que ya cargó; se le manda el XML por postMessage
             // (no cabe en un query string).
             if (mensaje.channel === CANAL_LISTO) {
-                ventana.postMessage(
+                ventanaAbierta.postMessage(
                     { channel: CANAL_FIRMA, identificacion: datos.identificacion, xmlFactura: datos.xmlFactura },
                     HSM_SIGN_URL,
                 );

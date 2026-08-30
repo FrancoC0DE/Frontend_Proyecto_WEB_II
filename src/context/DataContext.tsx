@@ -359,7 +359,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
         documento: v.documento_identidad,
         placa: v.placa ?? '',
         // El SP puede devolver hora_esperada o fecha_hora_estimada según la versión
-        hora_esperada: toTimeOnly(v.hora_esperada ?? (v as Record<string, unknown>).fecha_hora_estimada as string ?? ''),
+        hora_esperada: toTimeOnly(v.hora_esperada ?? (v as unknown as Record<string, unknown>).fecha_hora_estimada as string ?? ''),
         estado: v.estado,
         motivo_rechazo: v.motivo_rechazo ?? undefined,
       }));
