@@ -242,6 +242,16 @@ curl https://backend-proyecto-web-ii.onrender.com/api/facturacion/ventas/42 \
 curl https://backend-proyecto-web-ii.onrender.com/api/facturacion/ventas \
   -H "x-api-key: bef_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"</pre>
 
+    <h3>Formato: uno solo, universal — no hay adaptadores por tipo de venta</h3>
+    <p>A diferencia de otros servicios de la red (por ejemplo Billing Kilometer, que ofrece varios "adaptadores" según el tipo de cobro: multa, mensualidad, reserva, venta de productos, etc.), <strong>nosotros exponemos un único formato de venta</strong> — el que se ve en el paso 2 (<code>referenciaExterna</code>, <code>clienteNombre</code>, <code>clienteIdentificacion</code>, <code>clienteCorreo</code>, <code>detalle</code>, <code>monto</code>) — y no distinguimos categorías de cobro ni hacemos auto-detección de formato.</p>
+    <p>Esto es una decisión deliberada, no una limitación pendiente de resolver: es el mismo criterio que usan la mayoría de APIs de facturación reales (Stripe, por ejemplo) — un contrato de datos único y estable, y es responsabilidad de quien consume adaptar SU venta a ESE formato antes de llamarnos, no al revés.</p>
+    <p>En la práctica esto significa:</p>
+    <ul>
+      <li>Una venta con un solo cliente, una descripción y un monto total encaja directo.</li>
+      <li>Un carrito con varias líneas/artículos hay que colapsarlo en un solo <code>detalle</code> de texto (ej. <code>"2x Camiseta, 1x Gorra"</code>) y sumar el <code>monto</code> total, o bien llamar a <code>POST /ventas</code> una vez por cada línea si se prefiere una factura separada por artículo.</li>
+      <li>No hay campo de "categoría" ni distintas plantillas de XML según el tipo de negocio — el XML que devolvemos siempre tiene la misma estructura.</li>
+    </ul>
+
     <h3>Errores comunes</h3>
     <table>
       <tr><th>Código</th><th>Causa</th></tr>
