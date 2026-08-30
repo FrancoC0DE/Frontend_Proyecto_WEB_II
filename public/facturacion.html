@@ -155,23 +155,47 @@
   </div>
 
   <div class="card">
-    <h2>2. Cómo integrar (resumen)</h2>
-    <p>Firmar es siempre interactivo — tu PIN de HSM Sign CR nunca sale de tu propio navegador ni pasa por nuestro backend.</p>
+    <h2>2. Manual de integración completo</h2>
+    <p>Firmar es siempre interactivo — tu PIN de HSM Sign CR nunca sale de tu propio navegador ni pasa por nuestro backend (mismo criterio que BankyFinanzas con el número de tarjeta).</p>
+
+    <h3>Resumen del flujo</h3>
     <ol class="steps">
       <li><strong>POST /sitios</strong> (arriba) — una sola vez, obtenés tu API key.</li>
       <li><strong>POST /ventas</strong> — le mandás los datos de una venta; te devolvemos el XML sin firmar, armado con tu identidad como emisor.</li>
       <li>Firmás ese XML con tu propia identificación + PIN en HSM Sign CR (en tu propio sitio).</li>
       <li><strong>POST /ventas/:id/firmar</strong> — nos mandás el resultado de esa firma; validamos y enviamos a Mini Tributación a nombre tuyo.</li>
-      <li><strong>GET /ventas/:id</strong> — consultás el estado (aceptada/rechazada + número de acuse) cuando quieras.</li>
+      <li><strong>GET /ventas/:id</strong> o <strong>GET /ventas</strong> — consultás el estado (aceptada/rechazada + número de acuse) cuando quieras.</li>
     </ol>
 
     <h3>URL base</h3>
     <pre>https://backend-proyecto-web-ii.onrender.com/api/facturacion</pre>
 
-    <h3>Ejemplo: registrar una venta</h3>
+    <h3>Requisito antes de firmar de verdad</h3>
+    <p>Tu identificación tributaria debe estar registrada como contribuyente ACTIVO en Mini Tributación y tener un certificado VIGENTE en HSM Sign CR — igual que hicimos nosotros. No emitimos facturas a nombre tuyo si esos dos registros no existen.</p>
+
+    <h3>1. Registrar tu sitio (público, una sola vez)</h3>
+    <pre>curl -X POST https://backend-proyecto-web-ii.onrender.com/api/facturacion/sitios \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nombre": "Tienda de Ejemplo",
+    "correo": "contacto@tuequipo.com",
+    "identificacionTributaria": "1-2345-6789",
+    "tipoIdentificacion": "CEDULA_FISICA"
+  }'</pre>
+    <p><code>tipoIdentificacion</code>: <code>CEDULA_FISICA</code> | <code>CEDULA_JURIDICA</code> | <code>DIMEX</code> | <code>NITE</code>.</p>
+    <p>Respuesta (201):</p>
+    <pre>{
+  "id": 1,
+  "nombre": "Tienda de Ejemplo",
+  "apiKey": "bef_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  "aviso": "Guarda esta API key ahora: no se puede volver a mostrar..."
+}</pre>
+    <p><strong>Guardá la <code>apiKey</code> ya mismo</strong> — solo guardamos su hash, no se puede recuperar. Todas las llamadas siguientes la llevan en el encabezado <code>x-api-key</code>.</p>
+
+    <h3>2. Registrar una venta</h3>
     <pre>curl -X POST https://backend-proyecto-web-ii.onrender.com/api/facturacion/ventas \
   -H "Content-Type: application/json" \
-  -H "x-api-key: TU_API_KEY" \
+  -H "x-api-key: bef_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" \
   -d '{
     "referenciaExterna": "ORD-001",
     "clienteNombre": "Ana Pérez",
@@ -180,23 +204,56 @@
     "detalle": "Compra en línea",
     "monto": 15000
   }'</pre>
+    <p>Respuesta (201) — el XML sin firmar, con TU identidad como emisor:</p>
+    <pre>{
+  "id": 42,
+  "estado": "pendiente_firma",
+  "xmlOriginal": "&lt;?xml version=\"1.0\"...?&gt;&lt;FacturaElectronica&gt;...&lt;/FacturaElectronica&gt;",
+  "mensaje": "Factura registrada como pendiente de firma. Firma este XML..."
+}</pre>
+
+    <h3>3. Firmar ese XML (en tu propio sitio)</h3>
+    <p>Con <code>firmarConHSMSignCR</code> (ver el SDK de HSM Sign CR) o el flujo equivalente que uses, firmá el <code>xmlOriginal</code> del paso anterior con <strong>tu</strong> identificación y PIN. Vas a obtener <code>xmlFirmado</code> (y opcionalmente <code>hashDocumento</code>/<code>serialCertificado</code>).</p>
+
+    <h3>4. Enviarnos el resultado de la firma</h3>
+    <pre>curl -X POST https://backend-proyecto-web-ii.onrender.com/api/facturacion/ventas/42/firmar \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: bef_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" \
+  -d '{
+    "xmlFirmado": "&lt;...XML firmado por HSM Sign CR...&gt;",
+    "hashDocumento": "opcional",
+    "serialCertificado": "opcional"
+  }'</pre>
+    <p>Validamos la firma contra HSM Sign CR y, si es válida, enviamos la factura a Mini Tributación (DGTD) a nombre de <strong>tu</strong> identidad fiscal (no la nuestra). Respuesta (200):</p>
+    <pre>{
+  "message": "Factura firmada y aceptada por Mini Tributación",
+  "estado": "aceptada",
+  "numeroAcuse": "123",
+  "motivo": null
+}</pre>
+    <p>Si Mini Tributación la rechaza, <code>estado</code> es <code>"rechazada"</code> y <code>motivo</code> trae el porqué.</p>
+
+    <h3>5. Consultar el estado</h3>
+    <pre># Una factura puntual
+curl https://backend-proyecto-web-ii.onrender.com/api/facturacion/ventas/42 \
+  -H "x-api-key: bef_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+# Todas las de tu sitio
+curl https://backend-proyecto-web-ii.onrender.com/api/facturacion/ventas \
+  -H "x-api-key: bef_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"</pre>
 
     <h3>Errores comunes</h3>
     <table>
       <tr><th>Código</th><th>Causa</th></tr>
       <tr><td>401</td><td>Falta <code>x-api-key</code>, o es inválida / el sitio está inactivo</td></tr>
-      <tr><td>400</td><td>Datos inválidos, o la firma/XML no pasó validación</td></tr>
+      <tr><td>400</td><td>Datos de venta/sitio inválidos, o la firma/XML no pasó validación</td></tr>
       <tr><td>404</td><td>La factura no existe o no pertenece a tu API key</td></tr>
-      <tr><td>409</td><td>Ya intentaste firmar una factura que no está pendiente</td></tr>
+      <tr><td>409</td><td>Ya intentaste firmar una factura que no está en estado <code>pendiente_firma</code></td></tr>
     </table>
-
-    <h3>Qué NO hacemos por vos</h3>
-    <p>No generamos el comprobante en PDF a tu nombre (necesitás tu propia cuenta de Billing Kilometer para eso), no procesamos el cobro (necesitás tu propia pasarela, ej. BankyFinanzas), y no firmamos por vos — el PIN es tuyo.</p>
   </div>
 
   <footer>
-    Manual completo, ejemplos de cada endpoint y catálogo de errores en el
-    <a href="https://github.com/FrancoC0DE/Backend_Proyecto_WEB_II#facturación-electrónica--api-para-otros-sitios" target="_blank" rel="noopener">README del backend</a>.
+    Boricuas Condominium — Empresa que vende el servicio de Facturación Electrónica.
   </footer>
 </div>
 
