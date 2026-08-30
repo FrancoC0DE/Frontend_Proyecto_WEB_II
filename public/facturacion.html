@@ -203,19 +203,41 @@
 <script>
   const API_BASE = 'https://backend-proyecto-web-ii.onrender.com/api/facturacion';
 
+  // Validación liviana: alcanza con confirmar la FORMA general, no un
+  // formato exacto por tipo (física, jurídica, DIMEX y NITE tienen formatos
+  // distintos entre sí — una regex estricta para uno rechazaría los otros
+  // tres). La validación fiscal real la hace Mini Tributación más adelante.
+  const CORREO_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const IDENTIFICACION_REGEX = /^[\d-]{9,14}$/;
+
   document.getElementById('form-registro').addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('btn-registro');
     const resultado = document.getElementById('resultado');
     resultado.className = 'resultado';
     resultado.innerHTML = '';
+
+    const correo = document.getElementById('correo').value.trim();
+    const identificacion = document.getElementById('identificacion').value.trim();
+
+    if (!CORREO_REGEX.test(correo)) {
+      resultado.className = 'resultado error';
+      resultado.innerHTML = '<strong>Error:</strong> El correo no tiene un formato válido (ej. nombre@dominio.com).';
+      return;
+    }
+    if (!IDENTIFICACION_REGEX.test(identificacion)) {
+      resultado.className = 'resultado error';
+      resultado.innerHTML = '<strong>Error:</strong> La identificación solo puede tener dígitos y guiones (9 a 14 caracteres).';
+      return;
+    }
+
     btn.disabled = true;
     btn.textContent = 'Registrando...';
 
     const payload = {
       nombre: document.getElementById('nombre').value.trim(),
-      correo: document.getElementById('correo').value.trim(),
-      identificacionTributaria: document.getElementById('identificacion').value.trim(),
+      correo,
+      identificacionTributaria: identificacion,
       tipoIdentificacion: document.getElementById('tipo').value,
     };
 
