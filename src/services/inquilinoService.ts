@@ -164,6 +164,15 @@ export const inquilinoService = {
   obtenerMisReservas: async (): Promise<ReservaInquilinoRaw[]> => { return await api.get<ReservaInquilinoRaw[]>('/inquilino/reservas'); },
   obtenerProximaReserva: async (): Promise<ProximaReservaRaw | null> => { return await api.get<ProximaReservaRaw | null>('/inquilino/reservas/proxima'); },
   crearReserva: async (data: CrearReservaInquilinoPayload): Promise<CrearReservaInquilinoResponse> => { return await api.post<CrearReservaInquilinoResponse>('/inquilino/reservas', data); },
+  // Valida SIN crear ni cobrar (sp_ValidarReservaDatos) — se llama antes de
+  // abrir la ventana de pago de BankyFinanzas, para no cobrarle al inquilino
+  // una reserva que el backend rechazaría después (capacidad, horario, etc.).
+  // api.post rechaza con ApiError en 400; el caller decide qué mostrar.
+  validarReserva: async (
+    data: Omit<CrearReservaInquilinoPayload, 'metodo_pago'>
+  ): Promise<{ valido: boolean; monto: number }> => {
+    return await api.post<{ valido: boolean; monto: number }>('/inquilino/reservas/validar', data);
+  },
   // NOTA (cambio - fix ruta): Inquilinoreservaroute.ts define
   // `PATCH /api/inquilino/reservas/:id` (sin sufijo /cancelar); antes esta
   // función apuntaba a `/inquilino/reservas/${id}/cancelar`, que no existe

@@ -200,6 +200,27 @@ export default function NuevaReservaPage({ preselectedAreaId }: NuevaReservaPage
 
     setEnviando(true);
     try {
+      // Validar ANTES de cobrar: sp_ValidarReservaDatos corre las mismas
+      // reglas que sp_CrearReservaPago (capacidad, horario, traslapes, límite
+      // semanal) pero sin insertar nada. Antes de esto, el flujo cobraba con
+      // BankyFinanzas PRIMERO y recién ahí sp_CrearReservaPago rechazaba la
+      // reserva (ej. cantidad_personas > capacidad_max) — el inquilino
+      // terminaba pagando por una reserva que nunca se creó.
+      try {
+        await inquilinoService.validarReserva({
+          id_area: area.id,
+          fecha,
+          hora_inicio: horaInicio,
+          hora_fin: horaFin,
+          cantidad_personas: personas,
+        });
+      } catch (errorValidacion: unknown) {
+        const e = errorValidacion as Error;
+        showToast(e.message || 'Esta reserva no es válida.', 'error');
+        setEnviando(false);
+        return;
+      }
+
       // Cobro real con BankyFinanzas (tarjeta): se abre la ventana emergente
       // de la pasarela y se espera su resultado ANTES de crear la reserva.
       // Solo si el banco aprueba el cobro se llama a crearReserva(). Para
